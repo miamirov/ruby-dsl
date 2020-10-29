@@ -9,6 +9,12 @@ copyright:           "2019 Author name here"
 extra-source-files:
 - README.md
 - ChangeLog.md
+- src/Ruby/Reader/Parser/Parser.y
+- src/Ruby/Reader/Lexer/Lexer.x
+
+build-tools:
+  - happy
+  - alex
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -21,6 +27,7 @@ description:         Please see the README on GitHub at <https://github.com/Gith
 
 dependencies:
 - base >= 4.7 && < 5
+- array
 
 library:
   source-dirs: src
