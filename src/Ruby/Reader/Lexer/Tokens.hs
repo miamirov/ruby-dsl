@@ -51,6 +51,7 @@ data TokenType
   | ForK
   | InK
   | DoK
+  | ReturnK
   | RParS
   | LParS
   | DDotS
@@ -67,4 +68,5 @@ data TokenType
   | AndS
   | OrS
   | NotS
+  | SemicolonS
   deriving (Eq, Show)

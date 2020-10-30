@@ -15,10 +15,13 @@ $alpha  = [a-zA-Z_]
 tokens :-
     $white+                           ;
 
-    \"[^\"]*\"                        { token StringL }
+    \;                                { token SemicolonS }
+    \"[^\"]*\"                        { token StringL    }
 
-    True                              { token TrueL  }
-    False                             { token FalseL }
+    true                              { token TrueL   }
+    false                             { token FalseL  }
+    return                            { token ReturnK }
+    nil                               { token NilL    }
 
     \+                                { token PlusS     }
     \-                                { token MinusS    }
