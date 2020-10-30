@@ -13,11 +13,45 @@ $digit  = 0-9
 $alpha  = [a-zA-Z_]
 
 tokens :-
-    $white+                  ;
+    $white+                           ;
 
-    $alpha [$digit $alpha]*  { token Word }
+    \"[^\"]*\"                        { token StringL }
 
-    0 | ($digit_ $digit*)    { token Digit }
+    True                              { token TrueL  }
+    False                             { token FalseL }
+
+    \+                                { token PlusS     }
+    \-                                { token MinusS    }
+    \*                                { token AsteriskS }
+    \/                                { token SlashS    }
+
+    \=\=                              { token EqS    }
+    \!\=                              { token NotEqS }
+
+    \>\=                              { token GteS }
+    \<\=                              { token LteS }
+    \>                                { token GtS  }
+    \<                                { token LtS  }
+    \&\&                              { token AndS }
+    \|\|                              { token OrS  }
+    \!                                { token NotS }
+
+    \(                                { token RParS }
+    \)                                { token LParS }
+    \.\.                              { token DDotS }
+
+    def                               { token DefK   }
+    for                               { token ForK   }
+    end                               { token EndK   }
+    if                                { token IfK    }
+    in                                { token InK    }
+    else                              { token ElseK  }
+    elsif                             { token ElsifK }
+
+    $alpha [$digit $alpha]*           { token Word }
+
+    (0 | ($digit_ $digit*))\.$digit+  { token FloatL }
+    0 | ($digit_ $digit*)             { token IntL   }
 
 {
 convertPosition :: AlexPosn -> Position

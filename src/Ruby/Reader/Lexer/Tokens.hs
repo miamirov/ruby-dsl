@@ -37,5 +37,34 @@ instance Show Position where
 
 data TokenType
   = Word
-  | Digit
+  | IntL
+  | FloatL
+  | StringL
+  | TrueL
+  | FalseL
+  | NilL
+  | DefK
+  | EndK
+  | IfK
+  | ElsifK
+  | ElseK
+  | ForK
+  | InK
+  | DoK
+  | RParS
+  | LParS
+  | DDotS
+  | PlusS
+  | MinusS
+  | AsteriskS
+  | SlashS
+  | EqS
+  | NotEqS
+  | GteS
+  | GtS
+  | LtS
+  | LteS
+  | AndS
+  | OrS
+  | NotS
   deriving (Eq, Show)
