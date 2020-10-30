@@ -15,22 +15,24 @@ data Command
 data Link
 
 class Ruby expr where
-  file
+  file_
     :: [expr Command]
     -> expr ()
 
   def_
-    :: [Name]
+    :: Name
+    -> [Name]
     -> [expr Command]
     -> expr Command
 
-  assoc
+  assoc_
     :: Name
     -> expr Link
     -> expr Command
 
   if_
-    :: [(expr Link, [expr Command])]
+    :: expr Link
+    -> [expr Command]
     -> Maybe [expr Command]
     -> expr Command
 
@@ -44,12 +46,12 @@ class Ruby expr where
     :: expr Link
     -> expr Command
 
-  call
+  call_
     :: Name
     -> [expr Link]
     -> expr Link
 
-  onTop
+  onTop_
     :: expr Link
     -> expr Command
 
@@ -57,38 +59,40 @@ class Ruby expr where
     :: Name
     -> expr Link
 
-  negate :: expr Link -> expr Link
+  negate_ :: expr Link -> expr Link
 
-  not    :: expr Link -> expr Link
+  not_ :: expr Link -> expr Link
 
-  mult   :: expr Link -> expr Link -> expr Link
+  mult_ :: expr Link -> expr Link -> expr Link
 
-  div    :: expr Link -> expr Link -> expr Link
+  div_ :: expr Link -> expr Link -> expr Link
 
-  plus   :: expr Link -> expr Link -> expr Link
+  plus_ :: expr Link -> expr Link -> expr Link
 
-  minus  :: expr Link -> expr Link -> expr Link
+  minus_ :: expr Link -> expr Link -> expr Link
 
-  gt     :: expr Link -> expr Link -> expr Link
+  gt_ :: expr Link -> expr Link -> expr Link
 
-  gte    :: expr Link -> expr Link -> expr Link
+  gte_ :: expr Link -> expr Link -> expr Link
 
-  lt     :: expr Link -> expr Link -> expr Link
+  lt_ :: expr Link -> expr Link -> expr Link
 
-  lte    :: expr Link -> expr Link -> expr Link
+  lte_ :: expr Link -> expr Link -> expr Link
 
-  eq     :: expr Link -> expr Link -> expr Link
+  eq_ :: expr Link -> expr Link -> expr Link
 
-  notEq  :: expr Link -> expr Link -> expr Link
+  notEq_ :: expr Link -> expr Link -> expr Link
 
-  and    :: expr Link -> expr Link -> expr Link
+  and_ :: expr Link -> expr Link -> expr Link
 
-  or     :: expr Link -> expr Link -> expr Link
+  or_ :: expr Link -> expr Link -> expr Link
 
-  int    :: Integer -> expr Link
-  
-  float  :: Double -> expr Link
-  
-  string :: String -> expr Link
-  
-  bool   :: Bool -> expr Link
+  int_ :: Integer -> expr Link
+
+  float_ :: Double -> expr Link
+
+  string_ :: String -> expr Link
+
+  bool_ :: Bool -> expr Link
+
+  nil_ :: () -> expr Link

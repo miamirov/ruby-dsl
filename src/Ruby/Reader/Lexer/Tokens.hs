@@ -46,8 +46,8 @@ data TokenType
   | DefK
   | EndK
   | IfK
-  | ElsifK
   | ElseK
+  | ThenK
   | ForK
   | InK
   | DoK
@@ -69,4 +69,6 @@ data TokenType
   | OrS
   | NotS
   | SemicolonS
+  | CommaS
+  | AssignedS
   deriving (Eq, Show)

@@ -16,6 +16,7 @@ tokens :-
     $white+                           ;
 
     \;                                { token SemicolonS }
+    \,                                { token CommaS     }
     \"[^\"]*\"                        { token StringL    }
 
     true                              { token TrueL   }
@@ -39,6 +40,8 @@ tokens :-
     \|\|                              { token OrS  }
     \!                                { token NotS }
 
+    \=                                { token AssignedS }
+
     \(                                { token RParS }
     \)                                { token LParS }
     \.\.                              { token DDotS }
@@ -49,7 +52,8 @@ tokens :-
     if                                { token IfK    }
     in                                { token InK    }
     else                              { token ElseK  }
-    elsif                             { token ElsifK }
+    then                              { token ThenK  }
+    do                                { token DoK    }
 
     $alpha [$digit $alpha]*           { token Word }
 
