@@ -19,6 +19,11 @@ tokens :-
     \,                                { token CommaS     }
     \"[^\"]*\"                        { token StringL    }
 
+    puts                              { token Word }
+    gets\.chomp                       { token Word }
+    gets\.chomp\.to_i                 { token Word }
+    gets\.chomp\.to_f                 { token Word }
+
     true                              { token TrueL   }
     false                             { token FalseL  }
     return                            { token ReturnK }
