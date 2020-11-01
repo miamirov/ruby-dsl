@@ -6,7 +6,7 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE DeriveAnyClass #-}
 
-module Ruby.Reader.Interpreter
+module Ruby.Interpreter
   ( Interpreter
 
   , interpret
@@ -22,7 +22,7 @@ import Control.Monad ((>=>), void, when)
 import Control.Exception (throwIO, Exception)
 import Data.Maybe (isJust)
 import Text.Read (readMaybe)
-import System.IO (openFile, IOMode(AppendMode, ReadMode), hPutStr, hClose, hGetLine)
+import System.IO (openFile, IOMode(AppendMode, ReadMode), hClose, hGetLine, hPutStrLn)
 
 data Interpreter a where
   InterpretLink    :: (IORef [Scope] -> IO Object) -> Interpreter Link
@@ -331,18 +331,18 @@ initScope inputFile outputFile = Scope
     puts_ :: Object -> IO ()
     puts_ (Object oType obj) =
       case oType of
-        RubyInt    -> print_ obj
-        RubyFloat  -> print_ obj
+        RubyInt    -> print_ $ show obj
+        RubyFloat  -> print_ $ show obj
         RubyString -> print_ obj
-        RubyBool   -> print_ obj
-        RubyNil    -> print_ obj
+        RubyBool   -> print_ $ show obj
+        RubyNil    -> print_ $ show obj
     
-    print_ :: Show a => a -> IO ()
+    print_ :: String -> IO ()
     print_ value
       | null outputFile = print value
       | otherwise = do
-          file <- openFile inputFile AppendMode
-          hPutStr file $ show value
+          file <- openFile outputFile AppendMode
+          hPutStrLn file value
           hClose file
     
     readLine_ :: IO String

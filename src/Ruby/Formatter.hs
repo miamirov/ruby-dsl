@@ -169,4 +169,4 @@ formatUnaryOperator operator value =  Formatter . const $
 
 formatBinaryOperator :: String -> Formatter Link -> Formatter Link -> Formatter Link 
 formatBinaryOperator operator left right = Formatter . const $
-  "(" ++ format_ left ++ operator ++ format_ right ++ ")" 
+  "(" ++ format_ left ++ " " ++ operator ++ " " ++ format_ right ++ ")" 

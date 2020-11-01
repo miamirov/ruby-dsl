@@ -54,3 +54,7 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - ruby-dsl
+    - tasty
+    - tasty-hunit
+    - deepseq
+    - directory

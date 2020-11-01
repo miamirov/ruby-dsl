@@ -1,2 +1,10 @@
+module Main
+  ( main
+  ) where
+
+import Test.Tasty (defaultMain)
+
+import Test.Suites
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented"
+main = defaultMain testRubyDsl

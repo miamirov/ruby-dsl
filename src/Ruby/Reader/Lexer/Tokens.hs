@@ -17,8 +17,8 @@ instance Show Token where
   show :: Token -> String
   show Token { tType, tPosition, tValue } =
     "Token" ++
-        "-" ++ show tType     ++
-        " " ++ show tValue    ++
+        "-" ++ show tType ++
+        " `" ++ tValue ++ "`" ++
         " " ++ show tPosition
 
 data Position = Position

@@ -17,7 +17,6 @@ import Ruby.Dsl
 %monad          { Result } { thenE } { returnE }
 
 %token
-    STR         { Token T.StringL    _ $$ }
     TRUE        { Token T.TrueL      _ _  }
     FALSE       { Token T.FalseL     _ _  }
     RETURN      { Token T.ReturnK    _ _  }
@@ -163,7 +162,7 @@ Int :: { forall expr . Ruby expr => expr Link }
   : INT                         { int_ (read $1 :: Integer) }
 
 String :: { forall expr . Ruby expr => expr Link }
-  : STRING                      { string_ (filter (== '"') $1) }
+  : STRING                      { string_ (filter (/= '"') $1) }
 
 Bool :: { forall expr . Ruby expr => expr Link }
   : TRUE                        { bool_ True  }
