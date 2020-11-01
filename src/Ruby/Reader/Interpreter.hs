@@ -4,6 +4,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE DeriveAnyClass #-}
 
 module Ruby.Reader.Interpreter
   ( Interpreter
@@ -18,9 +19,10 @@ import Data.Map (Map, (!?), insert, empty, fromList)
 import Ruby.Dsl
 import Data.Typeable (Typeable, (:~:)(Refl), eqT)
 import Control.Monad ((>=>), void, when)
-import Control.Exception (throwIO)
+import Control.Exception (throwIO, Exception)
 import Data.Maybe (isJust)
 import Text.Read (readMaybe)
+import System.IO (openFile, IOMode(AppendMode, ReadMode), hPutStr, hClose, hGetLine)
 
 data Interpreter a where
   InterpretLink    :: (IORef [Scope] -> IO Object) -> Interpreter Link
@@ -62,6 +64,17 @@ instance Show (RubyType t) where
     RubyString -> "String"
     RubyBool   -> "Bool"
     RubyNil    -> "Nil"
+
+newtype InterpretError
+  = InterpretError String
+  deriving (Eq, Exception)
+
+instance Show InterpretError where
+  show :: InterpretError -> String
+  show (InterpretError msg) = "interpret error: " ++ msg
+
+interpretError :: String  -> InterpretError
+interpretError = InterpretError
 
 instance Ruby Interpreter where
     file_
@@ -276,7 +289,7 @@ emptyScope = Scope empty empty
 checkCountOfArguments :: Name -> Int -> Int -> IO ()
 checkCountOfArguments fName expected actual =
   when (expected /= actual) $
-    throwIO . userError $
+    throwIO . interpretError $
       "Incorrect count of arguments on call function" ++
         fName ++ " (expected=" ++ show expected ++
         ", actual=" ++ show actual ++ ")"
@@ -296,7 +309,7 @@ initScope inputFile outputFile = Scope
             line <- readLine_
             let mbInt = readMaybe @Integer line
             case mbInt of
-              Nothing -> throwIO . userError $
+              Nothing -> throwIO . interpretError $
                 "Cannot convert string to Integer: '" ++ line ++ "'"
               Just i -> return $ Object RubyInt i
       , (,) "gets.chomp.to_f" $
@@ -305,7 +318,7 @@ initScope inputFile outputFile = Scope
             line <- readLine_
             let mbInt = readMaybe @Double line
             case mbInt of
-              Nothing -> throwIO . userError $
+              Nothing -> throwIO . interpretError $
                 "Cannot convert string to Float: '" ++ line ++ "'"
               Just i -> return $ Object RubyFloat i
       , (,) "gets.chomp" $
@@ -325,10 +338,21 @@ initScope inputFile outputFile = Scope
         RubyNil    -> print_ obj
     
     print_ :: Show a => a -> IO ()
-    print_ = print
+    print_ value
+      | null outputFile = print value
+      | otherwise = do
+          file <- openFile inputFile AppendMode
+          hPutStr file $ show value
+          hClose file
     
     readLine_ :: IO String
-    readLine_ = getLine
+    readLine_
+      | null inputFile = getLine
+      | otherwise = do
+          file <- openFile inputFile ReadMode
+          s <- hGetLine file
+          hClose file
+          return s
 
 withScope :: IORef [Scope] -> (IORef [Scope] -> IO a) -> IO a
 withScope stateRef scopedIO = do
@@ -341,7 +365,7 @@ findInScope :: [Scope] -> (Scope -> Maybe a) -> String -> IO a
 findInScope scope looking errorMessage =
   case findInScope_ scope looking of
     Just a -> return a
-    Nothing -> throwIO $ userError errorMessage
+    Nothing -> throwIO $ interpretError errorMessage
 
 findInScope_ :: [Scope] -> (Scope -> Maybe a) -> Maybe a
 findInScope_ scope looking
@@ -472,7 +496,7 @@ binaryNumeric
 
 noMethodException :: Name -> RubyType t -> IO a
 noMethodException name tType =
-  throwIO . userError $
+  throwIO . interpretError $
     "No method '" ++ name ++ "' for " ++ show tType
 
 cast :: Object -> RubyType t -> IO t
@@ -505,5 +529,5 @@ cast (Object (oType :: RubyType oT) obj) = \case
 
     castException :: RubyType t -> IO a
     castException tType =
-      throwIO . userError $
+      throwIO . interpretError $
         "cannot cast type " ++ show oType ++ " to the type" ++ show tType

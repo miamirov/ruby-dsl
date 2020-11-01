@@ -10,7 +10,7 @@ main = interpret_ $ readRuby code
 
 code :: String
 code =
-  "a = gets.chomp.to_i();\n" ++
+  "a = gets.chomp.to_i(12);\n" ++
   "if a <= 0\n" ++
   "then\n" ++
   "  puts(-1);\n" ++
