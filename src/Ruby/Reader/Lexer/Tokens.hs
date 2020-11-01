@@ -7,6 +7,7 @@ module Ruby.Reader.Lexer.Tokens
   , Position(..)
   ) where
 
+-- | Tokens for Alex lexer
 data Token = Token
   { tType     :: TokenType
   , tPosition :: Position
@@ -21,6 +22,7 @@ instance Show Token where
         " `" ++ tValue ++ "`" ++
         " " ++ show tPosition
 
+-- | As AlexPos
 data Position = Position
   { pGlobal :: Int
   , pLine   :: Int
@@ -35,6 +37,7 @@ instance Show Position where
     " c:" ++ show pColumn ++
     ")"
 
+-- | Types of Tokens
 data TokenType
   = Word
   | IntL

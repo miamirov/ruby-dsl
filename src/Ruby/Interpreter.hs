@@ -24,31 +24,42 @@ import Data.Maybe (isJust)
 import Text.Read (readMaybe)
 import System.IO (openFile, IOMode(AppendMode, ReadMode), hClose, hGetLine, hPutStrLn)
 
+-- | Interpreting Ruby
 data Interpreter a where
+  -- | Create Link Interpreter
   InterpretLink    :: (IORef [Scope] -> IO Object) -> Interpreter Link
+  -- | Create Command Interpreter
   InterpretCommand :: (IORef [Scope] -> IO (Either () Object)) -> Interpreter Command
+  -- | Create File Interpreter
   InterpretFile    :: (FilePath -> FilePath -> IO ()) -> Interpreter ()
 
+-- | Call with custom input/output files
 interpret :: Interpreter () -> FilePath -> FilePath -> IO ()
 interpret (InterpretFile io) = io
 
+-- | Call without files sin/sout will by used
 interpret_ :: Interpreter () -> IO ()
 interpret_ (InterpretFile io) = io "" ""
 
+-- | Interpret Link
 interpretLink :: Interpreter Link -> IORef [Scope] -> IO Object
 interpretLink (InterpretLink computeLink) = computeLink
 
+-- | Interpret Command
 interpretCommand :: Interpreter Command -> IORef [Scope] -> IO (Either () Object)
 interpretCommand (InterpretCommand runCommand) = runCommand
 
+-- | Level scope of the interpreter
 data Scope = Scope
-  { functions :: Map Name ([Object] -> IO Object)
-  , variables :: Map Name Object
+  { functions :: Map Name ([Object] -> IO Object)  -- ^ All functions
+  , variables :: Map Name Object                   -- ^ All variables
   }
 
+-- | Data with Hidden type
 data Object where
   Object :: Typeable t => RubyType t -> t -> Object
 
+-- | Types that allowed in Ruby
 data RubyType t where
   RubyInt    :: RubyType Integer
   RubyFloat  :: RubyType Double
@@ -65,6 +76,7 @@ instance Show (RubyType t) where
     RubyBool   -> "Bool"
     RubyNil    -> "Nil"
 
+-- | Data of interpret error
 newtype InterpretError
   = InterpretError String
   deriving (Eq, Exception)
@@ -73,9 +85,11 @@ instance Show InterpretError where
   show :: InterpretError -> String
   show (InterpretError msg) = "interpret error: " ++ msg
 
+-- | Create interpret error with given message
 interpretError :: String  -> InterpretError
 interpretError = InterpretError
 
+-- | Ruby implementation
 instance Ruby Interpreter where
     file_
       :: [Interpreter Command]

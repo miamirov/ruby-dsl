@@ -9,6 +9,7 @@ import Ruby.Reader.Parser.Result
 import Ruby.Reader.Parser.Parser
 import Ruby.Reader.Lexer.Lexer
 
+-- | Read Ruby expression from string
 readRuby :: Ruby expr => String -> expr ()
 readRuby = flip (.) (happyParser . alexScanTokens) $ \case
   Ok f     -> f

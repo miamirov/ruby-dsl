@@ -10,14 +10,18 @@ module Ruby.Formatter
 import Ruby.Dsl
 import Data.List (intercalate)
 
+-- | Format Ruby code
 newtype Formatter a = Formatter { format :: Int -> String }
 
+-- | Call formatting without offset
 format_ :: Formatter a -> String
 format_ = flip format 0
 
+-- | Create offset by its level
 buildOffset :: Int -> String
 buildOffset offset = replicate (4 * offset) ' '
 
+-- | Ruby implementation
 instance Ruby Formatter where
   file_
     :: [Formatter Command]
